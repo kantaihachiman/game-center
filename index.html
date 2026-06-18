@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.2aaaaaa</title>
+<title>艦隊八幡社ポータル v1.3aaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -115,7 +115,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.2aaa</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.3aa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -125,7 +125,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <div class="card" data-action="shopLink" data-say="はちまん売店はこちらなのです。"><div class="icon">🛍</div><div class="title">はちまん売店</div><div class="desc">開店中</div></div>
 </div>
 
-<div class="versionBadge">Version 1.2a</div><div class="counter"></div><div class="floor"></div>
+<div class="versionBadge">Version 1.3</div><div class="counter"></div><div class="floor"></div>
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
 <section class="debugPanel" id="debugPanel" aria-hidden="true">
@@ -187,7 +187,9 @@ const idleLines=[
   "艦隊八幡社、開店の儀なのです。",
   "気になる札を選んでほしいのです。",
   "水分補給も大事なのです。",
-  "はちまんが入口でご案内するのです。"
+  "はちまんが入口でご案内するのです。",
+  "今日の日付も、天気も、売店の様子も見守っているのです。",
+  "艦隊八幡社は、少しずつ賑やかになっていくのです。"
 ];
 
 function timeGreeting(){
@@ -198,6 +200,38 @@ function timeGreeting(){
   if(h>=18&&h<23)return "こんばんはなのです。夜の艦隊八幡社も開いているのです。";
   return "夜更かしはほどほどになのです。無理せず休んでほしいのです。";
 }
+
+function todayLine(){
+  const now=new Date();
+  const days=["日","月","火","水","木","金","土"];
+  const m=now.getMonth()+1;
+  const d=now.getDate();
+  const w=days[now.getDay()];
+  return "今日は"+m+"月"+d+"日、"+w+"曜日なのです。";
+}
+
+function dailyTopicLine(){
+  const now=new Date();
+  const day=now.getDay();
+  const date=now.getDate();
+
+  if(day===5){
+    return "今日は金曜日、カレーの日なのです。はちまんも楽しみなのです。";
+  }
+  if(date===8){
+    return "今日は八のつく日なのです。艦隊八幡社には、少し縁起が良い気がするのです。";
+  }
+  if(date===18 || date===28){
+    return "今日は八の気配が強い日なのです。よいことがあるかもしれないのです。";
+  }
+  if(day===0){
+    return "日曜日なのです。ゆっくり艦隊八幡社を見ていってほしいのです。";
+  }
+  if(day===6){
+    return "土曜日なのです。お出かけの前に、少し寄っていくのです。";
+  }
+  return todayLine()+"艦隊八幡社は本日も開店中なのです。";
+}
 const touchLines=[
   "いらっしゃいませなのです。",
   "今日も来てくれてうれしいのです。",
@@ -205,7 +239,9 @@ const touchLines=[
   "はちまんがご案内するのです。",
   "おみくじも見ていくのです？",
   "はちまん売店も開店中なのです。",
-  "ゆっくりしていってほしいのです。"
+  "ゆっくりしていってほしいのです。",
+  "今日はどんな一日になるのでしょうか。",
+  "艦隊八幡社、ただいま開店中なのです。"
 ];
 function randomTouchLine(){
   return touchLines[Math.floor(Math.random()*touchLines.length)];
@@ -335,10 +371,13 @@ function weatherLine(){
 
 function randomShopkeeperLine(){
   const r=Math.random();
-  if(rankingEntries.length && r<0.30){
-    return Math.random()<0.55 ? rankingTop3Line() : rankingLine();
+  if(r<0.18){
+    return dailyTopicLine();
   }
-  if(weatherInfo && r<0.50){
+  if(rankingEntries.length && r<0.42){
+    return Math.random()<0.60 ? rankingTop3Line() : rankingLine();
+  }
+  if(weatherInfo && r<0.64){
     return weatherLine();
   }
   return idleLines[Math.floor(Math.random()*idleLines.length)];
@@ -477,21 +516,23 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.2aa 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.3a 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
+    setTimeout(()=>speak(dailyTopicLine(),3000),2500);
+
     loadRanking().then(ok=>{
       if(ok && rankingEntries.length){
-        setTimeout(()=>speak(rankingTop3Line(),3600),2600);
+        setTimeout(()=>speak(rankingTop3Line(),3600),6100);
       }
     });
 
     loadWeather().then(ok=>{
       if(ok && weatherInfo){
-        setTimeout(()=>speak(weatherLine(),3600),6900);
+        setTimeout(()=>speak(weatherLine(),3600),10100);
       }
     });
 
-    nextAutoAt=performance.now()+10500;
+    nextAutoAt=performance.now()+14500;
     window.addEventListener("resize",placeModel);
     tick();
   }catch(e){console.error(e);setStatus("読み込み失敗："+e.message);speechText.textContent="Live2Dの読み込みに失敗したのです。"}
@@ -515,7 +556,14 @@ document.getElementById("testLeftBtn").onclick=()=>startAction("left","左腕テ
 document.getElementById("testMouthBtn").onclick=()=>startAction("mouth","あいうえお、口パク確認なのです。");
 document.getElementById("testWaveBtn").onclick=()=>startAction("wave","手ふり確認なのです。");
 document.getElementById("mGuideBtn").onclick=()=>{
-  const line=rankingEntries.length ? rankingTop3Line() : "ここは艦隊八幡社の入口なのです。はちまんがご案内するのです。";
+  let line="";
+  if(rankingEntries.length && Math.random()<0.55){
+    line=rankingTop3Line();
+  }else if(weatherInfo && Math.random()<0.45){
+    line=weatherLine();
+  }else{
+    line=dailyTopicLine();
+  }
   startAction("jump",line);
 };
 document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
