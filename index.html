@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>艦隊八幡社ポータル v1.2aaaa</title>
+<title>艦隊八幡社ポータル v1.2aaaaaa</title>
 <style>
 *{box-sizing:border-box}
 :root{--brown:#4b281b;--cream:#fff5dc;--red:#a83229;--green:#3f7a61}
@@ -115,7 +115,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 <body>
 <div class="app">
 <div class="wallPattern"></div>
-<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.2aa</div></header>
+<header><h1>艦隊八幡社</h1><div class="sub">公開版 v1.2aaa</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -125,10 +125,19 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
   <div class="card" data-action="shopLink" data-say="はちまん売店はこちらなのです。"><div class="icon">🛍</div><div class="title">はちまん売店</div><div class="desc">開店中</div></div>
 </div>
 
-<div class="versionBadge">Version 1.2</div><div class="counter"></div><div class="floor"></div>
+<div class="versionBadge">Version 1.2a</div><div class="counter"></div><div class="floor"></div>
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
-<section class="debugPanel" id="debugPanel" aria-hidden="true"></section>
+<section class="debugPanel" id="debugPanel" aria-hidden="true">
+  <div id="status"></div>
+  <div id="readout"></div>
+  <button id="debugBtn" type="button" style="display:none"></button>
+  <button id="autoBtn" type="button" style="display:none"></button>
+  <button id="testRightBtn" type="button" style="display:none"></button>
+  <button id="testLeftBtn" type="button" style="display:none"></button>
+  <button id="testMouthBtn" type="button" style="display:none"></button>
+  <button id="testWaveBtn" type="button" style="display:none"></button>
+</section>
 
 <div class="mobileBar">
   <button id="mGuideBtn">案内</button>
@@ -335,7 +344,7 @@ function randomShopkeeperLine(){
   return idleLines[Math.floor(Math.random()*idleLines.length)];
 }
 
-function setStatus(t,d){statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
+function setStatus(t,d){if(!statusEl)return;statusEl.innerHTML=t+"<small>モデルパス："+MODEL_PATH+"</small>"+(d?"<small>"+d+"</small>":"")}
 function getClass(){if(window.PIXI&&PIXI.live2d&&PIXI.live2d.Live2DModel)return PIXI.live2d.Live2DModel;if(window.Live2DModel)return window.Live2DModel;if(window.PIXI&&PIXI.Live2DModel)return PIXI.Live2DModel;return null}
 function idToString(id){if(id==null)return"";if(typeof id==="string")return id;if(id.s)return id.s;if(id.id)return id.id;if(id._id)return id._id;if(id.toString)return id.toString();return String(id)}
 function collectParams(){core=model&&model.internalModel&&model.internalModel.coreModel;const out=[];try{if(core&&core.getParameterCount&&core.getParameterId){for(let i=0;i<core.getParameterCount();i++)out.push({index:i,id:idToString(core.getParameterId(i))})}}catch(e){}return out.filter(p=>p.id)}
@@ -361,7 +370,7 @@ function applyValues(){
     "action： "+(action?action.name:"idle"),
     "params： "+params.length
   ];
-  readout.innerHTML=lines.map(x=>"<small>"+x+"</small>").join("");
+  if(readout)readout.innerHTML=lines.map(x=>"<small>"+x+"</small>").join("");
 }
 function placeModel(){
   if(!model||!app)return;
@@ -468,7 +477,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.2 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。v1.2aa 公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     loadRanking().then(ok=>{
       if(ok && rankingEntries.length){
