@@ -121,7 +121,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 
 
 
-/* PC版4カード表示 v1.3af-exhibition1020 */
+/* PC版カード表示 公開版 */
 @media(min-width:901px){
   .cards{
     display:grid!important;
@@ -144,7 +144,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* PCブラウザ縦表示向け：4カード見切れ修正 v1.3af-exhibition1020 */
+/* PCブラウザ縦表示向け：カード見切れ修正 公開版 */
 @media(min-width:700px){
   .cards{
     display:grid!important;
@@ -192,7 +192,7 @@ button:active{transform:translateY(3px);box-shadow:0 1px 0 #5c2219}button.green{
 }
 
 
-/* 上部QR＋メインゲーム導線 v1.3af-exhibition1020 */
+/* 上部QR＋メインゲーム導線 公開版 */
 .headerQR{
   position:absolute;
   z-index:75;
@@ -343,7 +343,7 @@ body{
   line-height:1.15!important;
 }
 
-/* 展示会版ではタイトル・吹き出しを安定配置 */
+/* 公開版ではタイトル・吹き出しを安定配置 */
 header{
   top:28px!important;
 }
@@ -549,7 +549,7 @@ header{
   <span>ゲーム体験<br>はこちら</span>
 </button>
 
-<header><h1>はちまんゲームセンター</h1><div class="sub">展示会版 v1.3af-exhibition1020</div></header>
+<header><h1>はちまんゲームセンター</h1><div class="sub">公開版</div></header>
 <canvas id="stage"></canvas>
 <div class="speech"><small>はちまん</small><span id="speechText">いらっしゃいませなのです。艦隊八幡社へようこそなのです。</span></div>
 
@@ -574,10 +574,10 @@ header{
     <div class="title">はちまん売店</div>
     <div class="desc">開店中</div>
   </div>
-  <div class="card" data-action="kamitsuki" data-say="かみつきおじさんは準備中なのです。もう少し待ってほしいのです。">
+  <div class="card" data-action="kamitsuki" data-say="かみつきおじさんはこちらなのです。">
     <div class="icon">👴</div>
     <div class="title">かみつきおじさん</div>
-    <div class="desc">準備中</div>
+    <div class="desc">&nbsp;</div>
   </div>
   <div class="card empty-card" aria-hidden="true">
     <div class="icon">&nbsp;</div>
@@ -596,7 +596,7 @@ header{
   </div>
 </div>
 
-<div class="versionBadge">展示会版 v1.3af-exhibition1020</div>
+<div class="versionBadge">公開版</div>
 <div class="counter"></div><div class="floor"></div>
 <div class="pcMenu"><button id="autoBtn" class="green">自動店番</button><button id="debugBtn">確認</button></div>
 
@@ -616,6 +616,10 @@ header{
   <button id="mOmikujiBtn">おみくじ</button>
   <button id="mGameBtn">ゲーム<br><small>開店中</small></button>
   <button id="mShopBtn">はちまん<br>売店</button>
+  <button id="mKamitsukiBtn">かみつき<br>おじさん</button>
+  <button class="disabled" type="button" disabled>&nbsp;</button>
+  <button class="disabled" type="button" disabled>&nbsp;</button>
+  <button class="disabled" type="button" disabled>&nbsp;</button>
 </div>
 </div>
 
@@ -994,7 +998,7 @@ async function init(){
     app.stage.addChild(model);
     if(model.anchor)model.anchor.set(0.5,0.92);
     params=collectParams();placeModel();
-    setStatus("読み込み成功。v1.3af-exhibition1020a 公開版です。","取得パラメータ："+params.length+"件");
+    setStatus("読み込み成功。公開版です。","取得パラメータ："+params.length+"件");
     speak(timeGreeting(),2300);
     setTimeout(()=>speak(dailyTopicLine(),3000),2500);
 
@@ -1025,6 +1029,11 @@ function openSlotGame(){
   setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/slot-game/"; },900);
 }
 
+function openKamitsukiOjisan(){
+  startAction("jump","かみつきおじさんはこちらなのです。");
+  setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/main-game/"; },900);
+}
+
 document.querySelectorAll(".card").forEach(card=>{
   card.onclick=()=>{
     if(card.classList.contains("empty-card"))return;
@@ -1038,8 +1047,8 @@ document.querySelectorAll(".card").forEach(card=>{
       return;
     }
     if(card.dataset.action==="slotLink"){openSlotGame();return;}
-    if(card.dataset.action==="kamitsuki"){startAction("bow",card.dataset.say);return;}
-    if(card.dataset.action==="gameSoon"){startAction("bow","CRいずもちゃんは準備中なのです。もう少し待ってほしいのです。");return;}
+    if(card.dataset.action==="kamitsuki"){openKamitsukiOjisan();return;}
+    if(card.dataset.action==="gameSoon"){startAction("bow","もう少し待ってほしいのです。");return;}
     startAction(card.dataset.action,card.dataset.say);
   };
 });
@@ -1064,8 +1073,9 @@ document.getElementById("mGuideBtn").onclick=()=>{
 document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
 document.getElementById("mGameBtn").onclick=()=>openSlotGame();
 document.getElementById("mShopBtn").onclick=()=>openHachimanShop();
+document.getElementById("mKamitsukiBtn").onclick=()=>openKamitsukiOjisan();
 
-function openMainGame(){}
+function openMainGame(){openKamitsukiOjisan();}
 
 const headerQRBtn=document.getElementById("headerQRBtn");
 if(headerQRBtn){
