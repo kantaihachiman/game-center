@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -559,10 +559,10 @@ header{
     <div class="title">案内</div>
     <div class="desc">艦隊八幡社</div>
   </div>
-  <div class="card" data-action="bow" data-say="おみくじは開発中なのです。楽しみにしていてくださいなのです。">
+  <div class="card" data-action="omikujiLink" data-say="おみくじはこちらなのです。">
     <div class="icon">⛩</div>
     <div class="title">おみくじ</div>
-    <div class="desc">開発中</div>
+    <div class="desc">&nbsp;</div>
   </div>
   <div class="card" data-action="slotLink" data-say="CRいずもちゃんはこちらなのです。">
     <div class="icon">🎰</div>
@@ -1029,6 +1029,11 @@ function openSlotGame(){
   setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/slot-game/"; },900);
 }
 
+function openOmikuji(){
+  startAction("bow","おみくじはこちらなのです。");
+  setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/omikuji/"; },900);
+}
+
 function openKamitsukiOjisan(){
   startAction("jump","かみつきおじさんはこちらなのです。");
   setTimeout(()=>{ window.location.href="https://kantaihachiman.github.io/main-game/"; },900);
@@ -1047,6 +1052,7 @@ document.querySelectorAll(".card").forEach(card=>{
       return;
     }
     if(card.dataset.action==="slotLink"){openSlotGame();return;}
+    if(card.dataset.action==="omikujiLink"){openOmikuji();return;}
     if(card.dataset.action==="kamitsuki"){openKamitsukiOjisan();return;}
     if(card.dataset.action==="gameSoon"){startAction("bow","もう少し待ってほしいのです。");return;}
     startAction(card.dataset.action,card.dataset.say);
@@ -1070,7 +1076,7 @@ document.getElementById("mGuideBtn").onclick=()=>{
   }
   startAction("jump",line);
 };
-document.getElementById("mOmikujiBtn").onclick=()=>startAction("bow","おみくじは開発中なのです。楽しみにしていてくださいなのです。");
+document.getElementById("mOmikujiBtn").onclick=()=>openOmikuji();
 document.getElementById("mGameBtn").onclick=()=>openSlotGame();
 document.getElementById("mShopBtn").onclick=()=>openHachimanShop();
 document.getElementById("mKamitsukiBtn").onclick=()=>openKamitsukiOjisan();
@@ -1127,3 +1133,5 @@ init();
 
 </body>
 </html>
+
+
